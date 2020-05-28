@@ -1,4 +1,4 @@
-module library
+module github.com/d-baranowski/gierkinetlib
 
 go 1.13
 

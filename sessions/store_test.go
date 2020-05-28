@@ -2,8 +2,8 @@ package sessions
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/d-baranowski/gierkinetlib/database"
 	"github.com/stretchr/testify/assert"
-	"library/database"
 	"testing"
 )
 

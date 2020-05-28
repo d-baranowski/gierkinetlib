@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
-	"library/config"
+	"github.com/d-baranowski/gierkinetlib/config"
 )
 
 type StoreConfig struct {

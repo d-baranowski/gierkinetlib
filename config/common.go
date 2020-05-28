@@ -1,6 +1,6 @@
 package config
 
-import "library/environment"
+import "github.com/d-baranowski/gierkinetlib/environment"
 
 type CommonConfig struct {
 	Environment string

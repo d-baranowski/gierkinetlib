@@ -2,8 +2,8 @@ package sessions
 
 import (
 	"fmt"
+	"github.com/d-baranowski/gierkinetlib/database"
 	"github.com/segmentio/ksuid"
-	"library/database"
 	"time"
 )
 

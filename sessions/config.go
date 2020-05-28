@@ -1,6 +1,6 @@
 package sessions
 
-import "library/config"
+import "github.com/d-baranowski/gierkinetlib/config"
 
 type Config struct {
 	config.CommonConfig
