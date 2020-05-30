@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	testSessionStoreConfig = SessionStoreConfig{
+	testSessionStoreConfig = sessionStoreConfig{
 		StoreConfig: database.StoreConfig{
 			TableName: aws.String("gierkinet-dev-dynamodb-main"),
 			Region:    aws.String("local"),
@@ -19,7 +19,7 @@ var (
 
 func TestIntegrationReadSession(t *testing.T) {
 	err := database.IntegrationTest(t, "state-1")
-	underTest, err := NewSessionStore(testSessionStoreConfig)
+	underTest, err := newSessionStore(testSessionStoreConfig)
 
 	assert.NoError(t, err, "Failed to configure store")
 	if err != nil {
@@ -27,7 +27,7 @@ func TestIntegrationReadSession(t *testing.T) {
 		return
 	}
 
-	actual, err := underTest.Get("1cP7biMd8ys6BWtd7JsYaejQoPe")
+	actual, err := underTest.get("1cP7biMd8ys6BWtd7JsYaejQoPe")
 
 	assert.NoError(t, err, "Failed to get record")
 	if err != nil {
@@ -35,7 +35,7 @@ func TestIntegrationReadSession(t *testing.T) {
 		return
 	}
 
-	expected := NewSessionRecord(SessionFields{
+	expected := newSessionRecord(SessionFields{
 		SessionID: "1cP7biMd8ys6BWtd7JsYaejQoPe",
 		Username:  "danny",
 		Picture:   "https://lh3.googleusercontent.com/a-/AOh14GjEUZoVup3yWpFBsHLTb3GPnQbDNAhwTmsLHi38=s96-c",
@@ -45,7 +45,7 @@ func TestIntegrationReadSession(t *testing.T) {
 
 	assert.Equal(t, expected, actual)
 
-	notFound, err := underTest.Get("notavalidid")
+	notFound, err := underTest.get("notavalidid")
 
 	assert.NoError(t, err, "Failed to get not found record")
 	if err != nil {
@@ -53,12 +53,12 @@ func TestIntegrationReadSession(t *testing.T) {
 		return
 	}
 
-	assert.Equal(t, SessionRecord{}, notFound)
+	assert.Equal(t, sessionRecord{}, notFound)
 }
 
 func TestIntegrationCreateSession(t *testing.T) {
 	err := database.IntegrationTest(t, "")
-	underTest, err := NewSessionStore(testSessionStoreConfig)
+	underTest, err := newSessionStore(testSessionStoreConfig)
 
 	assert.NoError(t, err, "Failed to configure store")
 	if err != nil {
@@ -66,7 +66,7 @@ func TestIntegrationCreateSession(t *testing.T) {
 		return
 	}
 
-	expected := NewSessionRecord(SessionFields{
+	expected := newSessionRecord(SessionFields{
 		SessionID: "1cP7biMd8ys6BWtd7JsYaejQoPe",
 		Username:  "danny",
 		Picture:   "https://lh3.googleusercontent.com/a-/AOh14GjEUZoVup3yWpFBsHLTb3GPnQbDNAhwTmsLHi38=s96-c",
@@ -74,7 +74,7 @@ func TestIntegrationCreateSession(t *testing.T) {
 	expected.Timestamp = "2020-05-25T14:53:48.720Z"
 	expected.TTL = 2590736671
 
-	err = underTest.Create(expected)
+	err = underTest.create(expected)
 
 	assert.NoError(t, err, "Failed to create session")
 	if err != nil {
@@ -82,7 +82,7 @@ func TestIntegrationCreateSession(t *testing.T) {
 		return
 	}
 
-	actual, err := underTest.Get("1cP7biMd8ys6BWtd7JsYaejQoPe")
+	actual, err := underTest.get("1cP7biMd8ys6BWtd7JsYaejQoPe")
 
 	assert.NoError(t, err, "Failed to fetch session")
 	if err != nil {

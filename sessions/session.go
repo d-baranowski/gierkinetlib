@@ -13,34 +13,34 @@ type SessionFields struct {
 	Picture    string
 }
 
-type SessionRecord struct {
+type sessionRecord struct {
 	SessionFields
 	database.TimeToLive
 	database.Record
 }
 
-func SessionRecordPK(sessionID string) string {
+func sessionRecordPK(sessionID string) string {
 	return fmt.Sprintf("SESSION#%s", sessionID)
 }
 
-func SessionRecordSK(sessionID string) string {
-	return SessionRecordPK(sessionID)
+func sessionRecordSK(sessionID string) string {
+	return sessionRecordPK(sessionID)
 }
 
-func NewSessionID() (id string, err error) {
+func newSessionID() (id string, err error) {
 	bytes, err := ksuid.New().MarshalText()
 	id = string(bytes)
 	return
 }
 
-func NewSessionRecord(fields SessionFields) SessionRecord {
-	result := SessionRecord{
+func newSessionRecord(fields SessionFields) sessionRecord {
+	result := sessionRecord{
 		SessionFields: fields,
 	}
 
 	result.BasePopulate()
-	result.PK = SessionRecordPK(fields.SessionID)
-	result.SK = SessionRecordSK(fields.SessionID)
+	result.PK = sessionRecordPK(fields.SessionID)
+	result.SK = sessionRecordSK(fields.SessionID)
 	result.Type = "Session"
 	result.TTL = time.Now().Add(24 * time.Hour).Unix()
 

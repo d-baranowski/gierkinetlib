@@ -1,14 +1,17 @@
 package sessions
 
-import "github.com/d-baranowski/gierkinetlib/config"
+import (
+	"github.com/d-baranowski/gierkinetlib/config"
+	"github.com/d-baranowski/gierkinetlib/database"
+)
 
-type Config struct {
+type sessionStoreConfig struct {
+	database.StoreConfig
 	config.CommonConfig
 }
 
-func DefaultConfig() Config {
-	result := Config{}
-	result.CommonConfig = config.DefaultConfig()
-
+func defaultSessionStoreConfig() sessionStoreConfig {
+	result := sessionStoreConfig{}
+	result.StoreConfig = database.DefaultStoreConfig(config.DefaultConfig())
 	return result
 }

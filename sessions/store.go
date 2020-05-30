@@ -5,27 +5,16 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
-	"github.com/d-baranowski/gierkinetlib/config"
 	"github.com/d-baranowski/gierkinetlib/database"
 	"time"
 )
 
-type SessionStoreConfig struct {
-	database.StoreConfig
-}
-
-func DefaultSessionStoreConfig() SessionStoreConfig {
-	result := SessionStoreConfig{}
-	result.StoreConfig = database.DefaultStoreConfig(config.DefaultConfig())
-	return result
-}
-
-type SessionStore struct {
+type sessionStore struct {
 	client    *dynamodb.DynamoDB
 	tableName *string
 }
 
-func NewSessionStore(config SessionStoreConfig) (store SessionStore, err error) {
+func newSessionStore(config sessionStoreConfig) (store sessionStore, err error) {
 	sess, err := session.NewSession(&aws.Config{Region: config.Region})
 	if err != nil {
 		return
@@ -39,15 +28,15 @@ func NewSessionStore(config SessionStoreConfig) (store SessionStore, err error) 
 	return
 }
 
-func DefaultSessionStore() (SessionStore, error) {
-	return NewSessionStore(DefaultSessionStoreConfig())
+func defaultSessionStore() (sessionStore, error) {
+	return newSessionStore(defaultSessionStoreConfig())
 }
 
 func key(sessionId string) map[string]*dynamodb.AttributeValue {
-	return database.Key(SessionRecordPK(sessionId), SessionRecordSK(sessionId))
+	return database.Key(sessionRecordPK(sessionId), sessionRecordSK(sessionId))
 }
 
-func (store SessionStore) Get(id string) (session SessionRecord, err error) {
+func (store sessionStore) get(id string) (session sessionRecord, err error) {
 	gio, err := store.client.GetItem(&dynamodb.GetItemInput{
 		Key:                      key(id),
 		TableName:                store.tableName,
@@ -61,13 +50,13 @@ func (store SessionStore) Get(id string) (session SessionRecord, err error) {
 	err = dynamodbattribute.UnmarshalMap(gio.Item, &session)
 
 	if session.TTL < time.Now().Unix() {
-		session = SessionRecord{}
+		session = sessionRecord{}
 	}
 
 	return
 }
 
-func (store SessionStore) Create(record SessionRecord) (err error) {
+func (store sessionStore) create(record sessionRecord) (err error) {
 	r, err := dynamodbattribute.MarshalMap(record)
 
 	if err != nil {
