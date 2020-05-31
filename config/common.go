@@ -9,7 +9,7 @@ type CommonConfig struct {
 
 func DefaultConfig() CommonConfig {
 	return CommonConfig{
-		Environment: environment.GetStringVarDefault("PRODUCT", "gierkinet"),
-		Product: environment.GetStringVarDefault("ENVIRONMENT", "prod"),
+		Environment: environment.GetStringVarDefault("ENVIRONMENT", "prod"),
+		Product: environment.GetStringVarDefault("PRODUCT", "gierkinet"),
 	}
 }
